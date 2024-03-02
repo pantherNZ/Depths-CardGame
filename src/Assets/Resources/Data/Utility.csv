@@ -1,0 +1,22 @@
+Name,Description,Count
+,Move +1,10
+,Move +2,5
+,Attack +1,6
+,Attack +2,3
+,Defence +1,6
+,Defence +2,3
+,Mining +1,6
+,Mining +2,3
+,Teleport to other player,2
+,Draw 2 cards,5
+,Action +1,4
+,Play +2 cards,4
+,"When looting, draw +2 cards to pick from",5
+,"Draw 4 cards, pick 1",4
+,Action: Scavenge,5
+,Draw a resource card and immediately store it ,2
+,Teleport to any tile,2
+,mine an additional time,3
+,attack an additional time,3
+,Equip an item,2
+,Store an additional resource,5
