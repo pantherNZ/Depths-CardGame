@@ -51,7 +51,7 @@ public class Deck : MonoBehaviour
 
         var gapBetweenDecks = 1.75f;
 
-        foreach( var line in equipment.text.Split( '\n' )[1..] )
+        foreach( var line in equipment.text.Split( '\n' )[1..].RandomShuffle() )
         {
             var data = SplitData( line );
             var name = data[0];
@@ -73,7 +73,7 @@ public class Deck : MonoBehaviour
             texts[4].text = defence.ToString();
         }
 
-        foreach( var line in utility.text.Split( '\n' )[1..] )
+        foreach( var line in utility.text.Split( '\n' )[1..].RandomShuffle() )
         {
             var data = SplitData( line );
             var name = data[0];
@@ -106,6 +106,17 @@ public class Deck : MonoBehaviour
                 texts[2].text = description;
             }
         }
+
+        equipmentCards.RandomShuffle();
+        utilityCards.RandomShuffle();
+        resourcesCards.RandomShuffle();
+
+        for( var i = 0; i < equipmentCards.Count; ++i )
+            equipmentCards[i].transform.position = equipmentCards[i].transform.position.SetZ( i );
+        for( var i = 0; i < utilityCards.Count; ++i )
+            utilityCards[i].transform.position = utilityCards[i].transform.position.SetZ( i );
+        for( var i = 0; i < resourcesCards.Count; ++i )
+            resourcesCards[i].transform.position = resourcesCards[i].transform.position.SetZ( i );
     }
 
     // Update is called once per frame
