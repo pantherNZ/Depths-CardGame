@@ -1,0 +1,17 @@
+Name,Description,Attack,Defence,Count
+Grimalk Hive Guard,2,3,4,1
+Void Stalker,1,4,2,1
+Nebula Wyrm,3,5,3,1
+Solar Phoenix,3,6,2,1
+Quantum Leech,1,2,1,1
+Void Jellyfish,4,7,6,1
+Galactic Goliath,3,4,3,1
+Starshade Predator,2,3,2,1
+Plasma Kraken,3,5,4,1
+Asteroid Mimic,3,6,5,1
+,,,
+,,,
+,can only be killed if you roll a 5 or 6 on the dice,,
+,can only be killed if you roll 4 or above on the dice,,
+,attack fails if you roll a 6 on the dice,,
+,roll 2 dice and pick highest,,

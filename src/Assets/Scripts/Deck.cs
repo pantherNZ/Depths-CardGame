@@ -2,20 +2,30 @@ using System.Collections;
 using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class Deck : MonoBehaviour
 {
-    const string equipmentDataPath = "Data/Equipment";
-    const string utilityDataPath = "Data/Utility";
-    const string resourcesDataPath = "Data/Resources";
+    const string equipmentDataPath = "Data/Depths - Card Game - Equipment";
+    const string utilityDataPath = "Data/Depths - Card Game - Utility";
+    const string resourcesDataPath = "Data/Depths - Card Game - Resources";
+    const string monstersDataPath = "Data/Depths - Card Game - Monsters";
+    const string minesDataPath = "Data/Depths - Card Game - Mines";
+    const string tilesDataPath = "Data/Depths - Card Game - Tiles";
 
     [SerializeField] GameObject equipmentCardPrefab;
     [SerializeField] GameObject utilityCardPrefab;
     [SerializeField] GameObject resourcesCardPrefab;
+    [SerializeField] GameObject monstersCardPrefab;
+    [SerializeField] GameObject minesCardPrefab;
+    [SerializeField] Tilemap gameBoardRef;
+    [SerializeField] int numSpecialTiles = 15;
 
     List<GameObject> equipmentCards = new List<GameObject>();
     List<GameObject> utilityCards = new List<GameObject>();
     List<GameObject> resourcesCards = new List<GameObject>();
+    List<GameObject> monsterCards = new List<GameObject>();
+    List<GameObject> mineCards = new List<GameObject>();
 
     string[] SplitData( string line )
     {
@@ -43,13 +53,24 @@ public class Deck : MonoBehaviour
         return data.ToArray();
     }
 
+    void InitiateDeck(ref List<GameObject> deck )
+    {
+        deck.RandomShuffle();
+        for( var i = 0; i < deck.Count; ++i )
+            deck[i].transform.position = deck[i].transform.position.SetZ( i );
+    }
+
     void Start()
     {
         var equipment = Resources.Load<TextAsset>( equipmentDataPath );
         var utility = Resources.Load<TextAsset>( utilityDataPath );
         var resources = Resources.Load<TextAsset>( resourcesDataPath );
+        var monsters = Resources.Load<TextAsset>( monstersDataPath );
+        var mines = Resources.Load<TextAsset>( minesDataPath );
+        var tiles = Resources.Load<TextAsset>( tilesDataPath );
 
-        var gapBetweenDecks = 1.75f;
+        var gapBetweenDecksX = 1.5f;
+        var gapBetweenDecksY = 1.75f;
 
         foreach( var line in equipment.text.Split( '\n' )[1..].RandomShuffle() )
         {
@@ -64,13 +85,14 @@ public class Deck : MonoBehaviour
             var mining = int.Parse( data[3] );
             var ability = data[4];
 
-            equipmentCards.Add( Instantiate( equipmentCardPrefab, transform.position.SetY( transform.position.y ), Quaternion.identity ) );
-            var texts = equipmentCards.Back().GetComponentsInChildren<TMPro.TextMeshPro>();
+            var newCard = Instantiate( equipmentCardPrefab, transform.position.SetY( transform.position.y ), Quaternion.identity );
+            var texts = newCard.GetComponentsInChildren<TMPro.TextMeshPro>();
             texts[0].text = name.Length > 0 ? name : "EQUIPMENT";
             texts[1].text = ability;
             texts[2].text = attack.ToString();
             texts[3].text = mining.ToString();
             texts[4].text = defence.ToString();
+            equipmentCards.Add( newCard );
         }
 
         foreach( var line in utility.text.Split( '\n' )[1..].RandomShuffle() )
@@ -82,10 +104,11 @@ public class Deck : MonoBehaviour
 
             for( var i = 0; i < count; ++i )
             {
-                utilityCards.Add( Instantiate( utilityCardPrefab, transform.position.SetY( transform.position.y + gapBetweenDecks ), Quaternion.identity ) );
-                var texts = utilityCards.Back().GetComponentsInChildren<TMPro.TextMeshPro>();
+                var newCard = Instantiate( utilityCardPrefab, transform.position.SetY( transform.position.y + gapBetweenDecksY ), Quaternion.identity );
+                var texts = newCard.GetComponentsInChildren<TMPro.TextMeshPro>();
                 texts[0].text = name.Length > 0 ? name : "UTILITY";
                 texts[1].text = description;
+                utilityCards.Add( newCard );
             }
         }
 
@@ -99,24 +122,87 @@ public class Deck : MonoBehaviour
 
             for( var i = 0; i < count; ++i )
             {
-                resourcesCards.Add( Instantiate( resourcesCardPrefab, transform.position.SetY( transform.position.y + gapBetweenDecks * 2.0f ), Quaternion.identity ) );
-                var texts = resourcesCards.Back().GetComponentsInChildren<TMPro.TextMeshPro>();
+                var newCard = Instantiate( resourcesCardPrefab, transform.position.SetY( transform.position.y + gapBetweenDecksY * 2.0f ), Quaternion.identity );
+                var texts = newCard.GetComponentsInChildren<TMPro.TextMeshPro>();
                 texts[0].text = gold;
                 texts[1].text = name.Length > 0 ? name : "EQUIPMENT";
                 texts[2].text = description;
+                resourcesCards.Add( newCard );
             }
         }
 
-        equipmentCards.RandomShuffle();
-        utilityCards.RandomShuffle();
-        resourcesCards.RandomShuffle();
+        foreach( var line in monsters.text.Split( '\n' )[1..].RandomShuffle() )
+        {
+            var data = SplitData( line );
 
-        for( var i = 0; i < equipmentCards.Count; ++i )
-            equipmentCards[i].transform.position = equipmentCards[i].transform.position.SetZ( i );
-        for( var i = 0; i < utilityCards.Count; ++i )
-            utilityCards[i].transform.position = utilityCards[i].transform.position.SetZ( i );
-        for( var i = 0; i < resourcesCards.Count; ++i )
-            resourcesCards[i].transform.position = resourcesCards[i].transform.position.SetZ( i );
+            if( data.Length <= 4 || data[1].Length < 1 || data[2].Length < 1 || data[3].Length < 1 )
+                continue;
+
+            var name = data[0];
+            var description = data[1];
+            var attack = int.Parse( data[2] );
+            var defence = int.Parse( data[3] );
+            var count = int.Parse( data[4] );
+
+            for( var i = 0; i < count; ++i )
+            {
+                var newCard = Instantiate( monstersCardPrefab, transform.position.SetX( transform.position.x + gapBetweenDecksX ), Quaternion.identity );
+                var texts = newCard.GetComponentsInChildren<TMPro.TextMeshPro>();
+                texts[0].text = name.Length > 0 ? name : "MONSTER";
+                texts[1].text = description;
+                texts[2].text = attack.ToString();
+                texts[3].text = defence.ToString();
+                monsterCards.Add( newCard );
+            }
+        }
+
+        foreach( var line in mines.text.Split( '\n' )[1..].RandomShuffle() )
+        {
+            var data = SplitData( line );
+            var name = data[0];
+            var description = data[1];
+            var defence = int.Parse( data[2] );
+            var count = int.Parse( data[3] );
+
+            for( var i = 0; i < count; ++i )
+            {
+                var newCard = Instantiate( minesCardPrefab, transform.position.SetX( transform.position.x + gapBetweenDecksX ).SetY( transform.position.y + gapBetweenDecksY ), Quaternion.identity );
+                var texts = newCard.GetComponentsInChildren<TMPro.TextMeshPro>();
+                texts[0].text = name.Length > 0 ? name : "MINE";
+                texts[1].text = description;
+                texts[2].text = defence.ToString();
+                mineCards.Add( newCard );
+            }
+        }
+
+        var tileLines = tiles.text.Split( '\n' )[1..].RandomShuffle();
+        var tilesCount = gameBoardRef.size.x * gameBoardRef.size.y;
+        var tilesSelector = Enumerable.Range( 0, tilesCount ).ToList();
+        for( var i = 0; i < numSpecialTiles; ++i )
+        {
+            var idx = tilesSelector.RemoveAndGet( Random.Range( 0, tilesSelector.Count ) );
+            var vecPos = new Vector3Int( idx / gameBoardRef.size.y, idx % gameBoardRef.size.y, 0 );
+            var tile = gameBoardRef.GetInstantiatedObject( vecPos );
+
+            if( tile == null )
+            {
+                i--;
+                continue;
+            }
+
+            var data = SplitData( tileLines[i] );
+            var name = data[0];
+            var description = data[1];
+            var texts = tile.GetComponentsInChildren<TMPro.TextMeshProUGUI>( true );
+            texts[0].text = name;
+            texts[1].text = description;
+        }
+
+        InitiateDeck( ref equipmentCards );
+        InitiateDeck( ref utilityCards );
+        InitiateDeck( ref resourcesCards );
+        InitiateDeck( ref monsterCards );
+        InitiateDeck( ref mineCards );
     }
 
     // Update is called once per frame

@@ -1,0 +1,23 @@
+Name,Description,Count
+,Move +1,5
+,Attack +1,4
+,Attack +2,2
+,Defence +1,4
+,Defence +2,2
+,Mining +1,4
+,Mining +2,2
+,"Teleport to other player, no action this turn",2
+,Draw 2 cards,4
+,Action +1,4
+,Play +2 cards,4
+,"When looting, draw +2 cards to pick from",5
+,"Draw 4 cards, pick 1",4
+,Draw a resource card and immediately store it ,2
+,"Teleport to any tile, no action this turn",2
+,mine an additional time,3
+,attack an additional time,3
+,secure an additional resource,5
+,convert an equipment weapon into stored resource (attack deternines the value),1
+,discard a card to perform +1 action,3
+,Discard hand and re-draw the same amount of cards,1
+,allow 1 reroll of the dice for a combat or mining action,4
