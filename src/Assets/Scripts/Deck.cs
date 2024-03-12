@@ -36,7 +36,7 @@ public class Deck : MonoBehaviour
             if( data[i].Length > 0 && data[i][0] == '"' )
             {
                 int j = i + 1;
-                var newStr = data[i];
+                var newStr = data[i][1..];
 
                 for( ; j < data.Count; ++j )
                 {
@@ -45,8 +45,8 @@ public class Deck : MonoBehaviour
                         break;
                 }
 
-                data.RemoveRange( i + 1, j - i );
-                data[i] = newStr;
+                data.RemoveRange( i + 1, Mathf.Min( data.Count - ( i + 1 ), j - i ) );
+                data[i] = newStr.Trim()[..^1];
             }
         }
 
@@ -176,20 +176,16 @@ public class Deck : MonoBehaviour
         }
 
         var tileLines = tiles.text.Split( '\n' )[1..].RandomShuffle();
-        var tilesCount = gameBoardRef.size.x * gameBoardRef.size.y;
-        var tilesSelector = Enumerable.Range( 0, tilesCount ).ToList();
-        for( var i = 0; i < numSpecialTiles; ++i )
+        var tilesSelector = new List<Vector3Int>();
+        foreach( var pos in gameBoardRef.cellBounds.allPositionsWithin )
+            if( gameBoardRef.GetInstantiatedObject( pos ) )
+                tilesSelector.Add( pos );
+        tilesSelector = tilesSelector.Skip( 1 ).Take( tilesSelector.Count - 2 ).ToList();
+
+        for( var i = 0; i < Mathf.Min( numSpecialTiles, tileLines.Count ); ++i )
         {
-            var idx = tilesSelector.RemoveAndGet( Random.Range( 0, tilesSelector.Count ) );
-            var vecPos = new Vector3Int( idx / gameBoardRef.size.y, idx % gameBoardRef.size.y, 0 );
+            var vecPos = tilesSelector.RemoveAndGet( Random.Range( 0, tilesSelector.Count ) );
             var tile = gameBoardRef.GetInstantiatedObject( vecPos );
-
-            if( tile == null )
-            {
-                i--;
-                continue;
-            }
-
             var data = SplitData( tileLines[i] );
             var name = data[0];
             var description = data[1];
