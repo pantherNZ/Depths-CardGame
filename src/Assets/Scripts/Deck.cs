@@ -69,7 +69,7 @@ public class Deck : MonoBehaviour
         var mines = Resources.Load<TextAsset>( minesDataPath );
         var tiles = Resources.Load<TextAsset>( tilesDataPath );
 
-        var gapBetweenDecksX = 1.5f;
+        var gapBetweenDecksX = -1.5f;
         var gapBetweenDecksY = 1.75f;
 
         foreach( var line in equipment.text.Split( '\n' )[1..].RandomShuffle() )

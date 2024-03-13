@@ -3,9 +3,9 @@ Dark Cave,Fight OR mine
 Frozen Lakes,Fight OR mine
 Volcanic Extraction Site,Mine
 Alien Ruins,Fight
-Nebular Forge,"Mine, +1 victory card on success"
+Nebular Forge,"Mine, +1 resource card on success"
 Quantum Rift,Fight
-Research Facility,"Fight, +1 victory card on success"
+Research Facility,"Fight, +1 resource card on success"
 Toxic Spore Caverns,"Fight, Monster attack +2, +1 loot"
 Ice Caverns,Mine
 Geo-Thermal Vents,Mine
@@ -13,3 +13,15 @@ Abandoned Colony,Fight
 Deep Core Mine,"Mine, ore defence +2, +1 loot"
 Lava Tunnels,Fight or Mine
 Mysterious Caverns,"Fight or Mine, must vs 2 cards minimum"
+Tech Cache,Draw 3 utility cards
+Underground Base,Draw 1 equipment card
+Utility Storage,Draw 2 utility cards
+Supply Station,Draw 3 utility cards
+Ammo Depot,Draw 1 equipment card
+Tech Vault,Draw 2 utility cards
+Utility Nexus,Draw 3 utility cards
+Old Ruins,Draw 1 equipment card
+Utility Outpost,Draw 2 utility cards
+Innovation Hub,Draw 3 utility cards
+Workshop,Draw 1 equipment card
+Science Facility,Draw 2 utility cards
