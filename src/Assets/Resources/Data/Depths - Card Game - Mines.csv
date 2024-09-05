@@ -1,11 +1,14 @@
-Name,Description,Defence,Count
-Xenobiological Flora,Draw 1 utility card,1,1
-Antimatter Pods,Draw 2 resource cards,5,1
-Electrum Veins,Draw any 2 cards,4,1
-Plasma Springs,Draw 2 equipment cards,3,1
-Ionic Crystal Fields,Draw 1 of any card,2,1
-Nebula Gas Vents,Draw 1 equipment card,1,1
-Dark Matter Clusters,Draw 3 resource cards,5,1
-Quantum Foam Pools,Draw 2 resource cards,4,1
-Metallic Asteroid Fragments,Draw 3 utility cards,3,1
-Crystalline Deposits,Draw 2 utility cards,2,1
+Name,Description,Reward,Defence,Count,Lose
+Xenobiological Flora,,Draw 3 utility,1,2,
+Antimatter Pods,,Draw 1 resource,2,2,
+Electrum Veins,,Draw 3 utility,3,2,
+Plasma Springs,,"Draw 4 utility, pick 2",4,2,
+Ionic Crystal Fields,,Draw 2 resources,5,1,Discard 1 card
+Nebula Gas Vents,,Draw 3 of any cards,8,1,
+Dark Matter Clusters,,Draw 4 utility,7,1,Discard 1 victory card
+Quantum Foam Pools,Requires a + mining utility card,Draw 3 resources,6,1,Discard 1 card
+Crystalline Deposits,Can only be mined if you roll a 6,Draw 4 utility,0,1,Discard 1 card
+White Crystals,,"Draw 4 utility, pick 2",3,1,
+Magical Crystal's,,"Draw 5 utility, pick 3",5,1,
+Spiky Formations,,"Discard an equipment, gain 1 resource card",3,1,
+Derelict Mine,,Draw utility and discard until 1 equipment gained,,,

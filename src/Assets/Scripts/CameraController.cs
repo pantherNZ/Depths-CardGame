@@ -15,7 +15,7 @@ public class CameraController : MonoBehaviour
                 transform.Translate( difference * -translationSpeed );
             }
 
-            Camera.main.orthographicSize -= Input.mouseScrollDelta.y * zoomSpeed;
+            Camera.main.orthographicSize = Mathf.Clamp( Camera.main.orthographicSize - Input.mouseScrollDelta.y * zoomSpeed, 1.0f, 10.0f );
         }
     }
 }

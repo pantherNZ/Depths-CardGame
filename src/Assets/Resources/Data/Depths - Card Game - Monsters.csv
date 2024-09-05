@@ -1,28 +1,17 @@
-Name,Description,Attack,Defence,Count
-Grimalk Hive Guard,2,3,4,1
-Void Stalker,1,4,2,1
-Nebula Wyrm,3,5,3,1
-Solar Phoenix,3,6,2,1
-Quantum Leech,1,2,1,1
-Void Jellyfish,4,7,6,1
-Galactic Goliath,3,4,3,1
-Starshade Predator,2,3,2,1
-Plasma Kraken,3,5,4,1
-Asteroid Mimic,3,6,5,1
-Dark Beast,,,,
-Rockbug,1,0,0,1
-,,,,
-,,,,
-,,,,
-,,,,
-,,,,
-,,,,
-,,,,
-,,,,
-,,,,
-,,,,
-,,,,
-,can only be killed if you roll a 5 or 6 on the dice,,,
-,can only be killed if you roll 4 or above on the dice,,,
-,attack fails if you roll a 6 on the dice,,,
-,roll 2 dice and pick highest,,,
+Name,Description,Reward,Defence,Count,Lose
+Plasma Kraken,,Gain 1 Utility,1,2,
+Void Stalker,,Gain 1 Utility,2,2,
+Nebula Wyrm,,Gain 1 Equipment,3,2,
+Solar Phoenix,,Gain 1 Equipment or Utility,4,2,
+Quantum Leech,,Gain 2 Utility,5,1,
+Void Jellyfish,,"Gain 2 utility, +1 option",6,1,
+Asteroid Mimic,Cannot be killed if you rolled >= 5,Gain 2 resources,5,1,Discard 1 utility card
+Dark Beast,Can only be killed by combining attack & mining + dice roll,Gain 3 cards,10,1,Discard 1 utility card
+Aryx,,Gain 2 cards,3,2,
+Spiny Voltos,,Gain 1 card,5,1,
+Bracken,,Gain 2 resources,5,1,
+Poison Spider,,Choose 2 cards,7,1,Discard 2 cards in hand
+Ceutran ,,Gain 1 equipment,3,1,
+Zontophys,,Gain 1 Utility or Equipment,3,1,
+Cave Crawler,,"Discard 1 card in hand, gain 1 utility loot",2,1,
+Monstrous Beast,,Gain 3 resources,8,1,Destroy 1 card in hand

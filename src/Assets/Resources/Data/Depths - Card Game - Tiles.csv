@@ -1,27 +1,50 @@
-Name,Description
-Dark Cave,Fight OR mine
-Frozen Lakes,Fight OR mine
-Volcanic Extraction Site,Mine
-Alien Ruins,Fight
-Nebular Forge,"Mine, +1 resource card on success"
-Quantum Rift,Fight
-Research Facility,"Fight, +1 resource card on success"
-Toxic Spore Caverns,"Fight, Monster attack +2, +1 loot"
-Ice Caverns,Mine
-Geo-Thermal Vents,Mine
-Abandoned Colony,Fight
-Deep Core Mine,"Mine, ore defence +2, +1 loot"
-Lava Tunnels,Fight or Mine
-Mysterious Caverns,"Fight or Mine, must vs 2 cards minimum"
-Tech Cache,Draw 3 utility cards
-Underground Base,Draw 1 equipment card
-Utility Storage,Draw 2 utility cards
-Supply Station,Draw 3 utility cards
-Ammo Depot,Draw 1 equipment card
-Tech Vault,Draw 2 utility cards
-Utility Nexus,Draw 3 utility cards
-Old Ruins,Draw 1 equipment card
-Utility Outpost,Draw 2 utility cards
-Innovation Hub,Draw 3 utility cards
-Workshop,Draw 1 equipment card
-Science Facility,Draw 2 utility cards
+Tile Group,Name,Description
+START 1,START,+3 defence while on this tile
+,Volcanic Site,Mine
+,Abandoned Colony,Fight
+,EMPTY,
+,,
+,,
+START 2,START,+3 defence while on this tile
+,Geo-Thermal Vents,Mine
+,Quantum Rift,Fight
+,EMPTY,
+,,
+,,
+CENTRE,Lumi Forest,+3 defence while on this tile
+,Research Facility,"Fight, +3 monster defence, +1 resource per monster"
+,Tech Vault,"discard up to 3 cards, draw 3 cards"
+,Mind Maze,+3 defence while on this tile
+,The Pit,Destroy a card
+,Nebular Forge,"Mine, +3 resource defence, +2 resources"
+ - Middle,Deep Dark,"Fight or Mine, must vs all 3 cards, take all loot"
+,,
+,,
+SIDE,Old Mine,Discard 3 cards to gain 1 resource
+,Dark Cave,Fight or Mine
+,EMPTY,
+,,
+,,
+SIDE,Fiery Pit,Destroy a card
+,Lava Tunnels,Fight
+,EMPTY,
+,,
+,,
+SIDE,Utility Outpost,"Discard up to 5 cards, draw that many cards"
+,Stronghold,Fight
+,EMPTY,
+,,
+,,
+SIDE,Ruins,"Discard up to 5 cards, draw that many cards"
+,Core Mine,Mine
+,EMPTY,
+,,
+,,
+SIDE,Winding Tunnels,"+2 defence on this tile, draw 2 cards"
+,Mysterious Caverns,"Fight or Mine, must vs 2 cards minimum, +1 loot"
+,EMPTY,
+,,
+,,
+SIDE,Ice Crystals,Mine
+,Frozen Lake,draw 2 cards from your discard pile
+,EMPTY,

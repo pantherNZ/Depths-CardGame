@@ -4,6 +4,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
+
+public class TileData
+{
+    public string name;
+    public string description;
+    public Vector2Int gridOffset;
+}
+
+public class TileGroupData
+{
+    public List<TileData> tiles = new();
+}
+
 public class Deck : MonoBehaviour
 {
     const string equipmentDataPath = "Data/Depths - Card Game - Equipment";
@@ -26,6 +39,7 @@ public class Deck : MonoBehaviour
     List<GameObject> resourcesCards = new List<GameObject>();
     List<GameObject> monsterCards = new List<GameObject>();
     List<GameObject> mineCards = new List<GameObject>();
+    List<List<>>
 
     string[] SplitData( string line )
     {

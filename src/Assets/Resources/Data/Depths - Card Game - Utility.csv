@@ -1,29 +1,39 @@
-Name,Description,Count
-Ion Thrusters,Move +1,5
-Hyper Jump,Move +2,2
-Shrapnel,Attack +1,4
-Temporal Laser,Attack +2,2
-Energy Shield,Defence +1,4
-Adaptive Defence,Defence +2,2
-Energy Surge,Mining +1,4
-Quantum Laser,Mining +2,2
-Teleportation Matrix,"Teleport to other player, no action this turn",2
-Emergency Signal,Draw 2 cards,4
-Phase Shift,Action +1,4
-Overclocked Systems,Play +2 cards,4
-Enchanced Sensors,"When looting, draw +2 cards to pick from",5
-Prototype Upgrade,"Draw 4 cards, pick 1",4
-Resource Drone,Draw a resource card and immediately store it ,2
-Worm Hole,"Teleport to any tile, no action this turn",2
-Multi-laser,Mine an additional time,3
-Advancted Targeting,Attack an additional time,3
-Nuclear Fusion,Play 2 additional resource cards to secure,2
-Evacuation,Convert an equipment weapon into secured resource (attack determines the value),1
-Chrono Shift,Discard a card to perform +1 action,3
-Adaptive Transformation,Discard hand and re-draw the same amount of cards,1
-Nanite Repair Tool,Allow 1 reroll of the dice for an action,4
-Precision,"Allow 1 additional roll of the dice for an action, pick 1",2
-Emergency Evac,"If within one space of a player, move up to three spaces away from them",1
-System Hack,Force an opponent to discard a random card,1
-Deflection Drones,Negate an attack against you,1
-Deflector Shield Activation,You cannot be attacked until your next turn,1
+Name,Description,Count,Starting Count
+Ion Thrusters,Move 1 tile,4,2
+Hyper Jump,Move 2 tiles,2,
+Shrapnel,Attack strength +1,4,2
+Temporal Laser,Attack strength +2,2,
+Energy Shield,Defence +1,4,
+Adaptive Defence,Defence +2,2,
+Energy Surge,Mining +1,4,2
+Quantum Laser,Mining +2,2,
+Teleportation Matrix,"Teleport to other player, no action this turn",2,
+Emergency Signal,sell an equipment card to gain 2 utility cards,4,
+Phase Shift,Action +1,4,
+Overclocked Systems,sell an equipment card for 2 resources,4,
+Enchanced Sensors,+2 loot to choose from,3,
+Prototype Upgrade,"Discard 2 cards, draw 4 cards",4,
+Resource Drone,Pick a resource card and immediately extract it ,2,
+Worm Hole,"Teleport to any tile, no action this turn",2,
+Multi-laser,Mine action anywhere,3,
+Advancted Targeting,Attack action anywhere ,3,
+Nuclear Fusion,+1 loot to choose from,2,
+Evacuation,Gain an extra loot,1,
+Chrono Shift,Discard a card to perform +1 action,3,
+Adaptive Transformation,Discard hand and re-draw the same amount of cards,1,
+Nanite Repair Tool,Allow 1 reroll of the dice for an action,4,
+Precision,"Allow 1 additional roll of the dice for an action, pick 1",2,
+Emergency Evac,"If within one space of a player, move up to three spaces away from them",1,
+System Hack,Force an opponent to discard a random card,1,
+Deflection Drones,Negate an attack against you,1,
+Deflector Shield Activation,You cannot be attacked until your next turn,1,
+Interception Device,re roll opponents dice,2,
+tes1,Use a utility card twice at once ,4,
+test2,reroll all loot choices,2,
+test3,reroll 1 loot choice,2,
+teat4,gain 2 loot on death,1,
+teat6,+1 resource loot from mining,1,
+test5,+1 resource loot from monster,1,
+,draw 2 cards after successful monster fight,,
+,draw 2 cards after successful mine,,
+,,85,
