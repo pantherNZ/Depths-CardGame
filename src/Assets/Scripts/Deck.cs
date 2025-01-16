@@ -3,6 +3,9 @@ using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using Unity.Collections.LowLevel.Unsafe;
+using UnityEngine.WSA;
+using System.Drawing;
 
 
 public class TileData
@@ -26,20 +29,34 @@ public class Deck : MonoBehaviour
     const string minesDataPath = "Data/Depths - Card Game - Mines";
     const string tilesDataPath = "Data/Depths - Card Game - Tiles";
 
+    [SerializeField] float hexSize;
     [SerializeField] GameObject equipmentCardPrefab;
     [SerializeField] GameObject utilityCardPrefab;
     [SerializeField] GameObject resourcesCardPrefab;
     [SerializeField] GameObject monstersCardPrefab;
     [SerializeField] GameObject minesCardPrefab;
-    [SerializeField] Tilemap gameBoardRef;
-    [SerializeField] int numSpecialTiles = 15;
+    [SerializeField] GameObject tilePrefab;
+
+    class TileGroup
+    {
+        public string name;
+        public List<Tile> tiles = new();
+        public GameObject obj;
+    }
+
+    class Tile
+    {
+        public string name;
+        public string description;
+        public Vector2Int coords;
+    }
 
     List<GameObject> equipmentCards = new List<GameObject>();
     List<GameObject> utilityCards = new List<GameObject>();
     List<GameObject> resourcesCards = new List<GameObject>();
     List<GameObject> monsterCards = new List<GameObject>();
     List<GameObject> mineCards = new List<GameObject>();
-    List<List<>>
+    List<TileGroup> tileGroups = new();
 
     string[] SplitData( string line )
     {
@@ -72,6 +89,13 @@ public class Deck : MonoBehaviour
         deck.RandomShuffle();
         for( var i = 0; i < deck.Count; ++i )
             deck[i].transform.position = deck[i].transform.position.SetZ( i );
+    }
+
+    Vector2 HexToPixel( Vector2Int coord )
+    {
+        var x = hexSize * 3 / 2 * coord.x;
+        var y = hexSize * Mathf.Sqrt( 3 ) * ( coord.y + 0.5f * ( coord.x & 1 ) );
+        return new Vector2( x, y ) / 1.95f;
     }
 
     void Start()
@@ -114,7 +138,8 @@ public class Deck : MonoBehaviour
             var data = SplitData( line );
             var name = data[0];
             var description = data[1];
-            var count = int.Parse( data[2] );
+            if( !int.TryParse( data[2], out var count ) ) 
+                continue;
 
             for( var i = 0; i < count; ++i )
             {
@@ -154,9 +179,9 @@ public class Deck : MonoBehaviour
 
             var name = data[0];
             var description = data[1];
-            var attack = int.Parse( data[2] );
-            var defence = int.Parse( data[3] );
-            var count = int.Parse( data[4] );
+            if( !int.TryParse( data[2], out var attack ) ) continue;
+            if( !int.TryParse( data[3], out var defence ) ) continue;
+            if( !int.TryParse( data[4], out var count ) ) continue;
 
             for( var i = 0; i < count; ++i )
             {
@@ -175,8 +200,8 @@ public class Deck : MonoBehaviour
             var data = SplitData( line );
             var name = data[0];
             var description = data[1];
-            var defence = int.Parse( data[2] );
-            var count = int.Parse( data[3] );
+            if( int.TryParse( data[2], out var defence ) ) continue;
+            if( int.TryParse( data[3], out var count ) ) continue;
 
             for( var i = 0; i < count; ++i )
             {
@@ -189,21 +214,52 @@ public class Deck : MonoBehaviour
             }
         }
 
-        var tileLines = tiles.text.Split( '\n' )[1..].RandomShuffle();
-        var tilesSelector = new List<Vector3Int>();
-        foreach( var pos in gameBoardRef.cellBounds.allPositionsWithin )
-            if( gameBoardRef.GetInstantiatedObject( pos ) )
-                tilesSelector.Add( pos );
-        tilesSelector = tilesSelector.Skip( 1 ).Take( tilesSelector.Count - 2 ).ToList();
+        TileGroup tileGroup = null;
 
-        for( var i = 0; i < Mathf.Min( numSpecialTiles, tileLines.Count ); ++i )
+        foreach( var line in tiles.text.Split( '\n' )[1..] )
         {
-            var vecPos = tilesSelector.RemoveAndGet( Random.Range( 0, tilesSelector.Count ) );
-            var tile = gameBoardRef.GetInstantiatedObject( vecPos );
-            var data = SplitData( tileLines[i] );
-            var name = data[0];
-            var description = data[1];
-            var texts = tile.GetComponentsInChildren<TMPro.TextMeshProUGUI>( true );
+            var data = SplitData( line );
+            var group = data[0];
+            var name = data[1];
+            var description = data[2];
+            var coordsStr = data[3].Split( ',' );
+
+            if( data[1].Length == 0 )
+            {
+                if( tileGroup != null )
+                {
+                    tileGroups.Add( tileGroup );
+                    tileGroup.obj.transform.Rotate( 0.0f, 0.0f, 60.0f * Random.Range( 0, 5 ) );
+                }
+                tileGroup = null;
+                continue;
+            }
+
+            if( tileGroup == null )
+            {
+                tileGroup = new TileGroup();
+                tileGroup.name = group;
+                tileGroup.obj = Instantiate( tilePrefab, new Vector2( tileGroups.Count * 2.0f, 0.0f ), Quaternion.identity );
+
+                foreach( Transform child in tileGroup.obj.transform )
+                    Destroy( child.gameObject );
+            }
+
+            var coords = new Vector2Int( int.Parse( coordsStr[0] ), int.Parse( coordsStr[1] ) );
+            tileGroup.tiles.Add( new Tile()
+            {
+                name = name,
+                description = description,
+                coords = coords,
+            } );
+
+            var offset = HexToPixel( coords );
+            var newTile = Instantiate( tilePrefab, offset + new Vector2( tileGroups.Count * 2.0f, 0.0f ), Quaternion.identity, tileGroup.obj.transform );
+            Destroy( newTile.GetComponent<Draggable>() );
+            tileGroup.obj.AddComponent<CircleCollider2D>().offset = newTile.transform.localPosition;
+            Destroy( newTile.GetComponent<Collider2D>() );
+
+            var texts = newTile.GetComponentsInChildren<TMPro.TextMeshProUGUI>( true );
             texts[0].text = name;
             texts[1].text = description;
         }
