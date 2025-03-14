@@ -43,9 +43,9 @@ SortingGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1236948560037684}
   m_Enabled: 1
-  m_SortingLayerID: -1748281577
+  m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 199
   m_SortAtRoot: 0
 --- !u!114 &1139750709648183480
 MonoBehaviour:
@@ -59,6 +59,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff838d87d0cd77a4a80b84af4ba28ed8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  allowRotation: 0
+  flippable: 0
+  rotationSnap: 0
 --- !u!58 &195596248980410113
 CircleCollider2D:
   m_ObjectHideFlags: 0

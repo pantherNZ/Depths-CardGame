@@ -305,8 +305,8 @@ Transform:
   - {fileID: 4481527158789234}
   - {fileID: 2330015033474872501}
   - {fileID: 4131822200243064}
-  - {fileID: 4252805412673014892}
   - {fileID: 4371899634342414935}
+  - {fileID: 4252805412673014892}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &212875847984066404
@@ -1164,7 +1164,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.241, y: 0.006}
+  m_AnchoredPosition: {x: 0.38, y: 0.006}
   m_SizeDelta: {x: 0.359, y: 0.22}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!23 &23270595084508038
@@ -1265,7 +1265,7 @@ MonoBehaviour:
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 1
-  m_HorizontalAlignment: 4
+  m_HorizontalAlignment: 1
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0

@@ -95,6 +95,11 @@ public class Deck : MonoBehaviour
         return new Vector2( x, y ) / 1.95f;
     }
 
+    string HTMLFormat( string str )
+    {
+        return str.Replace( "<BR>", "\n" );
+    }
+
     void Start()
     {
         var equipment = Resources.Load<TextAsset>( equipmentDataPath );
@@ -103,9 +108,6 @@ public class Deck : MonoBehaviour
         var monsters = Resources.Load<TextAsset>( monstersDataPath );
         var mines = Resources.Load<TextAsset>( minesDataPath );
         var tiles = Resources.Load<TextAsset>( tilesDataPath );
-
-        var gapBetweenDecksX = -1.5f;
-        var gapBetweenDecksY = 1.75f;
 
         foreach( var line in equipment.text.Split( '\n' )[1..].RandomShuffle() )
         {
@@ -119,7 +121,7 @@ public class Deck : MonoBehaviour
             var attack = int.Parse( data[2] );
             var defence = int.Parse( data[3] );
             var mining = int.Parse( data[4] );
-            var ability = data[5];
+            var ability = HTMLFormat(data[5]);
 
             var newCard = Instantiate( equipmentCardPrefab, transform.position, Quaternion.identity );
             newCard.name = name;
@@ -137,7 +139,7 @@ public class Deck : MonoBehaviour
         {
             var data = SplitData( line );
             var name = data[0];
-            var description = data[1];
+            var description = HTMLFormat( data[1] );
             if( !int.TryParse( data[2], out var cost ) ) 
                 continue;
             if( !int.TryParse( data[3], out var count ) )
@@ -163,7 +165,7 @@ public class Deck : MonoBehaviour
                 continue;
             if( !int.TryParse( data[2], out var gold ) )
                 continue;
-            var description = data[3];
+            var description = HTMLFormat( data[3] );
             var count = int.Parse( data[4] );
 
             for( var i = 0; i < count; ++i )
@@ -187,10 +189,12 @@ public class Deck : MonoBehaviour
                 continue;
 
             var name = data[0];
-            var description = data[1];
+            var description = HTMLFormat( data[1] );
             var reward = data[2];
-            if( !int.TryParse( data[3], out var defence ) ) continue;
-            if( !int.TryParse( data[4], out var count ) ) continue;
+            if( !int.TryParse( data[3], out var defence ) ) 
+                continue;
+            if( !int.TryParse( data[4], out var count ) ) 
+                continue;
             var onLose = data[5];
 
             for( var i = 0; i < count; ++i )
@@ -199,9 +203,8 @@ public class Deck : MonoBehaviour
                 newCard.name = name;
                 var texts = newCard.GetComponentsInChildren<TMPro.TextMeshPro>();
                 texts[0].text = name;
-                texts[1].text = description + "\n\n" + onLose;
-                texts[2].text = reward;
-                texts[3].text = defence.ToString();
+                texts[1].text = description + "\n\nWin: " + reward + "\nLose: " + onLose;
+                texts[2].text = defence.ToString();
                 monsterCards.Add( newCard );
             }
         }
@@ -210,10 +213,12 @@ public class Deck : MonoBehaviour
         {
             var data = SplitData( line );
             var name = data[0];
-            var description = data[1];
+            var description = HTMLFormat( data[1] );
             var reward = data[2];
-            if( int.TryParse( data[3], out var defence ) ) continue;
-            if( int.TryParse( data[4], out var count ) ) continue;
+            if( !int.TryParse( data[3], out var defence ) ) 
+                continue;
+            if( !int.TryParse( data[4], out var count ) ) 
+                continue;
             var lose = data[5];
 
             for( var i = 0; i < count; ++i )
@@ -230,12 +235,12 @@ public class Deck : MonoBehaviour
 
         TileGroup tileGroup = null;
 
-        foreach( var line in tiles.text.Split( '\n' )[1..] )
+        foreach( var ( idx, line ) in tiles.text.Split( '\n' )[1..].Enumerate() )
         {
             var data = SplitData( line );
-            var group = data[0];
+            var group = data[0] + idx;
             var name = data[1];
-            var description = data[2];
+            var description = HTMLFormat( data[2] );
             var coordsStr = data[3].Split( ',' );
 
             if( data[1].Length == 0 )
@@ -278,6 +283,8 @@ public class Deck : MonoBehaviour
             texts[1].text = description;
         }
 
+        var gapBetweenDecksY = 1.75f;
+
         var mainDeck = equipmentCards;
         mainDeck.InsertRange( 0, utilityCards );
         mainDeck.InsertRange( 0, resourcesCards );
@@ -291,7 +298,7 @@ public class Deck : MonoBehaviour
 
         try
         {
-            var bytes = System.IO.File.ReadAllBytes( "allcards" );
+            var bytes = File.ReadAllBytes( "allcards" );
             using var memoryStream = new MemoryStream( bytes, writable: false );
             using var reader = new BinaryReader( memoryStream );
 
@@ -300,6 +307,22 @@ public class Deck : MonoBehaviour
             LoadCards( resourcesCards, reader );
             LoadCards( monsterCards, reader );
             LoadCards( mineCards, reader );
+
+            var groupCount = reader.ReadInt32();
+            for( int i = 0; i < groupCount; ++i )
+            {
+                var name = reader.ReadString();
+                var x = reader.ReadSingle();
+                var y = reader.ReadSingle();
+                var z = reader.ReadSingle();
+                var rot = reader.ReadSingle();
+                var group = tileGroups.FirstOrDefault( g => g.name == name );
+                if( group != null )
+                {
+                    group.obj.transform.position = new Vector3( x, y, z );
+                    group.obj.transform.rotation = Quaternion.Euler( 0.0f, 0.0f, rot );
+                }
+            }
         }
         catch( System.Exception e )
         {
@@ -377,6 +400,16 @@ public class Deck : MonoBehaviour
         WriteCards( resourcesCards, writer );
         WriteCards( monsterCards, writer );
         WriteCards( mineCards, writer );
+
+        writer.Write( tileGroups.Count );
+        foreach( var group in tileGroups )
+        {
+            writer.Write( group.name );
+            writer.Write( group.obj.transform.position.x );
+            writer.Write( group.obj.transform.position.y );
+            writer.Write( group.obj.transform.position.z );
+            writer.Write( group.obj.transform.rotation.eulerAngles.z );
+        }
 
         var content = memoryStream.ToArray();
         System.IO.File.WriteAllBytes( "allcards", content );
