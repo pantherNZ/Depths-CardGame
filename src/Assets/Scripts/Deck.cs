@@ -1,12 +1,9 @@
-using System.Collections;
 using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Tilemaps;
-using Unity.Collections.LowLevel.Unsafe;
-using UnityEngine.WSA;
-using System.Drawing;
-
+using System.Collections;
+using System.IO;
+using UnityEditor;
 
 public class TileData
 {
@@ -84,11 +81,11 @@ public class Deck : MonoBehaviour
         return data.ToArray();
     }
 
-    void InitiateDeck(ref List<GameObject> deck )
+    void InitiateDeck( Vector3 position, List<GameObject> deck )
     {
         deck.RandomShuffle();
         for( var i = 0; i < deck.Count; ++i )
-            deck[i].transform.position = deck[i].transform.position.SetZ( i );
+            deck[i].transform.position = position.SetZ( i );
     }
 
     Vector2 HexToPixel( Vector2Int coord )
@@ -115,21 +112,24 @@ public class Deck : MonoBehaviour
             var data = SplitData( line );
             var name = data[0];
 
-            if( data[1].Length < 1 || data[2].Length < 1 || data[3].Length < 1 )
+            if( data[0].Length < 1 || data[2].Length < 1 || data[3].Length < 1 )
                 continue;
 
-            var attack = int.Parse( data[1] );
-            var defence = int.Parse( data[2] );
-            var mining = int.Parse( data[3] );
-            var ability = data[4];
+            var cost = data[1].Length > 0 ? int.Parse( data[1] ) : 0;
+            var attack = int.Parse( data[2] );
+            var defence = int.Parse( data[3] );
+            var mining = int.Parse( data[4] );
+            var ability = data[5];
 
-            var newCard = Instantiate( equipmentCardPrefab, transform.position.SetY( transform.position.y ), Quaternion.identity );
+            var newCard = Instantiate( equipmentCardPrefab, transform.position, Quaternion.identity );
+            newCard.name = name;
             var texts = newCard.GetComponentsInChildren<TMPro.TextMeshPro>();
-            texts[0].text = name.Length > 0 ? name : "EQUIPMENT";
+            texts[0].text = name;
             texts[1].text = ability;
             texts[2].text = attack.ToString();
             texts[3].text = mining.ToString();
             texts[4].text = defence.ToString();
+            texts[5].text = cost.ToString();
             equipmentCards.Add( newCard );
         }
 
@@ -138,15 +138,19 @@ public class Deck : MonoBehaviour
             var data = SplitData( line );
             var name = data[0];
             var description = data[1];
-            if( !int.TryParse( data[2], out var count ) ) 
+            if( !int.TryParse( data[2], out var cost ) ) 
+                continue;
+            if( !int.TryParse( data[3], out var count ) )
                 continue;
 
             for( var i = 0; i < count; ++i )
             {
-                var newCard = Instantiate( utilityCardPrefab, transform.position.SetY( transform.position.y + gapBetweenDecksY ), Quaternion.identity );
+                var newCard = Instantiate( utilityCardPrefab, Vector3.zero, Quaternion.identity );
+                newCard.name = name;
                 var texts = newCard.GetComponentsInChildren<TMPro.TextMeshPro>();
-                texts[0].text = name.Length > 0 ? name : "UTILITY";
+                texts[0].text = name;
                 texts[1].text = description;
+                texts[2].text = cost.ToString();
                 utilityCards.Add( newCard );
             }
         }
@@ -155,17 +159,22 @@ public class Deck : MonoBehaviour
         {
             var data = SplitData( line );
             var name = data[0];
-            var gold = data[1];
-            var description = data[2];
-            var count = int.Parse( data[3] );
+            if( !int.TryParse( data[1], out var cost ) )
+                continue;
+            if( !int.TryParse( data[2], out var gold ) )
+                continue;
+            var description = data[3];
+            var count = int.Parse( data[4] );
 
             for( var i = 0; i < count; ++i )
             {
-                var newCard = Instantiate( resourcesCardPrefab, transform.position.SetY( transform.position.y + gapBetweenDecksY * 2.0f ), Quaternion.identity );
+                var newCard = Instantiate( resourcesCardPrefab, Vector3.zero, Quaternion.identity );
+                newCard.name = name;
                 var texts = newCard.GetComponentsInChildren<TMPro.TextMeshPro>();
-                texts[0].text = gold;
-                texts[1].text = name.Length > 0 ? name : "EQUIPMENT";
+                texts[0].text = gold.ToString();
+                texts[1].text = name;
                 texts[2].text = description;
+                texts[3].text = cost.ToString();
                 resourcesCards.Add( newCard );
             }
         }
@@ -174,22 +183,24 @@ public class Deck : MonoBehaviour
         {
             var data = SplitData( line );
 
-            if( data.Length <= 4 || data[1].Length < 1 || data[2].Length < 1 || data[3].Length < 1 )
+            if( data.Length < 5 || data[0].Length < 1 )
                 continue;
 
             var name = data[0];
             var description = data[1];
-            if( !int.TryParse( data[2], out var attack ) ) continue;
+            var reward = data[2];
             if( !int.TryParse( data[3], out var defence ) ) continue;
             if( !int.TryParse( data[4], out var count ) ) continue;
+            var onLose = data[5];
 
             for( var i = 0; i < count; ++i )
             {
-                var newCard = Instantiate( monstersCardPrefab, transform.position.SetX( transform.position.x + gapBetweenDecksX ), Quaternion.identity );
+                var newCard = Instantiate( monstersCardPrefab, Vector3.zero, Quaternion.identity );
+                newCard.name = name;
                 var texts = newCard.GetComponentsInChildren<TMPro.TextMeshPro>();
-                texts[0].text = name.Length > 0 ? name : "MONSTER";
-                texts[1].text = description;
-                texts[2].text = attack.ToString();
+                texts[0].text = name;
+                texts[1].text = description + "\n\n" + onLose;
+                texts[2].text = reward;
                 texts[3].text = defence.ToString();
                 monsterCards.Add( newCard );
             }
@@ -200,14 +211,17 @@ public class Deck : MonoBehaviour
             var data = SplitData( line );
             var name = data[0];
             var description = data[1];
-            if( int.TryParse( data[2], out var defence ) ) continue;
-            if( int.TryParse( data[3], out var count ) ) continue;
+            var reward = data[2];
+            if( int.TryParse( data[3], out var defence ) ) continue;
+            if( int.TryParse( data[4], out var count ) ) continue;
+            var lose = data[5];
 
             for( var i = 0; i < count; ++i )
             {
-                var newCard = Instantiate( minesCardPrefab, transform.position.SetX( transform.position.x + gapBetweenDecksX ).SetY( transform.position.y + gapBetweenDecksY ), Quaternion.identity );
+                var newCard = Instantiate( minesCardPrefab, Vector3.zero, Quaternion.identity );
+                newCard.name = name;
                 var texts = newCard.GetComponentsInChildren<TMPro.TextMeshPro>();
-                texts[0].text = name.Length > 0 ? name : "MINE";
+                texts[0].text = name;
                 texts[1].text = description;
                 texts[2].text = defence.ToString();
                 mineCards.Add( newCard );
@@ -264,16 +278,116 @@ public class Deck : MonoBehaviour
             texts[1].text = description;
         }
 
-        InitiateDeck( ref equipmentCards );
-        InitiateDeck( ref utilityCards );
-        InitiateDeck( ref resourcesCards );
-        InitiateDeck( ref monsterCards );
-        InitiateDeck( ref mineCards );
+        var mainDeck = equipmentCards;
+        mainDeck.InsertRange( 0, utilityCards );
+        mainDeck.InsertRange( 0, resourcesCards );
+
+        InitiateDeck( transform.position.SetY( transform.position.y + gapBetweenDecksY ), mainDeck );
+
+        var sideDeck = monsterCards;
+        monsterCards.InsertRange( 0, mineCards );
+
+        InitiateDeck( transform.position.SetY( transform.position.y + gapBetweenDecksY * 2.0f ), sideDeck );
+
+        try
+        {
+            var bytes = System.IO.File.ReadAllBytes( "allcards" );
+            using var memoryStream = new MemoryStream( bytes, writable: false );
+            using var reader = new BinaryReader( memoryStream );
+
+            LoadCards( equipmentCards, reader );
+            LoadCards( utilityCards, reader );
+            LoadCards( resourcesCards, reader );
+            LoadCards( monsterCards, reader );
+            LoadCards( mineCards, reader );
+        }
+        catch( System.Exception e )
+        {
+            Debug.Log( "No save data found: " + e );
+        }
+
+        StartCoroutine( SaveLoop() );
+    }
+
+    void WriteCards( List<GameObject> cards, BinaryWriter writer )
+    {
+        writer.Write( cards.Count );
+        foreach( var card in cards )
+        {
+            writer.Write( card.name );
+            writer.Write( card.transform.position.x );
+            writer.Write( card.transform.position.y );
+            writer.Write( card.transform.position.z );
+        }
+    }
+
+    void LoadCards( List<GameObject> cards, BinaryReader reader )
+    {
+        var save = reader != null ? ReadCards( reader ) : null;
+        if( save != null )
+        {
+            foreach( var card in cards )
+            {
+                if( save.TryGetValue( card.name, out var pos ) )
+                {
+                    card.transform.position = pos[0];
+                    pos.RemoveAt( 0 );
+                }
+            }
+        }
+    }
+
+    Dictionary<string, List<Vector3>> ReadCards( BinaryReader reader )
+    {
+        var results = new Dictionary<string, List<Vector3>>();
+        var count = reader.ReadInt32();
+        for( int i = 0; i < count; ++i )
+        {
+            var name = reader.ReadString();
+            var x = reader.ReadSingle();
+            var y = reader.ReadSingle();
+            var z = reader.ReadSingle();
+            results.GetOrAdd( name ).Add( new Vector3( x, y, z ) );
+        }
+        return results;
     }
 
     // Update is called once per frame
-    void Update()
+    IEnumerator SaveLoop()
     {
-        
+        while( true )
+        {
+            yield return new WaitForSeconds( 5.0f );
+            Save();
+        }
+    }
+
+    private void OnApplicationQuit()
+    {
+        Save();
+    }
+
+    void Save()
+    {
+        using var memoryStream = new MemoryStream();
+        using var writer = new BinaryWriter( memoryStream );
+
+        WriteCards( equipmentCards, writer );
+        WriteCards( utilityCards, writer );
+        WriteCards( resourcesCards, writer );
+        WriteCards( monsterCards, writer );
+        WriteCards( mineCards, writer );
+
+        var content = memoryStream.ToArray();
+        System.IO.File.WriteAllBytes( "allcards", content );
+    }
+
+#if UNITY_EDITOR
+    [MenuItem( "Scripts/Delete Save Data" )]
+#endif
+    public static void DeleteSaveData()
+    {
+        PlayerPrefs.DeleteAll();
+        System.IO.File.Delete( "allcards" );
     }
 }
