@@ -129,6 +129,7 @@ public class Deck : MonoBehaviour
             texts[2].text = attack.ToString();
             texts[3].text = mining.ToString();
             texts[4].text = defence.ToString();
+            texts[5].text = cost.ToString();
             equipmentCards.Add( newCard );
         }
 
@@ -137,7 +138,9 @@ public class Deck : MonoBehaviour
             var data = SplitData( line );
             var name = data[0];
             var description = data[1];
-            if( !int.TryParse( data[2], out var count ) ) 
+            if( !int.TryParse( data[2], out var cost ) ) 
+                continue;
+            if( !int.TryParse( data[3], out var count ) )
                 continue;
 
             for( var i = 0; i < count; ++i )
@@ -147,6 +150,7 @@ public class Deck : MonoBehaviour
                 var texts = newCard.GetComponentsInChildren<TMPro.TextMeshPro>();
                 texts[0].text = name;
                 texts[1].text = description;
+                texts[2].text = cost.ToString();
                 utilityCards.Add( newCard );
             }
         }
@@ -155,18 +159,22 @@ public class Deck : MonoBehaviour
         {
             var data = SplitData( line );
             var name = data[0];
-            var gold = data[1];
-            var description = data[2];
-            var count = int.Parse( data[3] );
+            if( !int.TryParse( data[1], out var cost ) )
+                continue;
+            if( !int.TryParse( data[2], out var gold ) )
+                continue;
+            var description = data[3];
+            var count = int.Parse( data[4] );
 
             for( var i = 0; i < count; ++i )
             {
                 var newCard = Instantiate( resourcesCardPrefab, Vector3.zero, Quaternion.identity );
                 newCard.name = name;
                 var texts = newCard.GetComponentsInChildren<TMPro.TextMeshPro>();
-                texts[0].text = gold;
+                texts[0].text = gold.ToString();
                 texts[1].text = name;
                 texts[2].text = description;
+                texts[3].text = cost.ToString();
                 resourcesCards.Add( newCard );
             }
         }
@@ -191,7 +199,7 @@ public class Deck : MonoBehaviour
                 newCard.name = name;
                 var texts = newCard.GetComponentsInChildren<TMPro.TextMeshPro>();
                 texts[0].text = name;
-                texts[1].text = description;
+                texts[1].text = description + "\n\n" + onLose;
                 texts[2].text = reward;
                 texts[3].text = defence.ToString();
                 monsterCards.Add( newCard );
