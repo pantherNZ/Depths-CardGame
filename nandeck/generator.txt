@@ -1,0 +1,18 @@
+linkmulti=Count
+LINK = 1yRppgOM2Mgv7oh_b4S8wdnxVLZ0yx3HgWl51iP8_wRg!Utility
+
+[ALL]]=1-{(Name)}
+
+cards = {(Total Cards)}
+
+
+HTMLFONT=desc,"arial",12,,#000000,CENTER
+HTMLMARGINS=desc, 0%,0,0,0,center
+htmltext=[all],[Description],0%,68%,50,25%, #FFFFFF, 0, eb, 100, desc
+
+[HTML] = "(text) example<br>(image) example<br>"
+HTMLFONT = fnt, Arial, 10, , #000000
+HTMLFONT = fntb, Arial, 10, B, #000000
+HTMLKEY = 1, (text), "Text", fntb
+HTMLKEY = 1, (image), "Image", fntb
+HTMLTEXT = 1, [HTML], 0, 0, 6, 9, #FFFFFF, 0, E, 100, fnt
