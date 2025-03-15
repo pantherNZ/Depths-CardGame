@@ -1,50 +1,114 @@
-Tile Group,Name,Description,Coords
-START 1,START,+3 defence while on this tile,"0, 1"
-,Volcanic Site,Mine,"0, 0"
-,Abandoned Colony,Fight,"1, 1"
-,EMPTY,,"1, 0"
-,,,
-,,,
-START 2,START,+3 defence while on this tile,"0, 1"
-,Geo-Thermal Vents,Mine,"0, 0"
-,Quantum Rift,Fight,"1, 1"
-,EMPTY,,"1, 0"
-,,,
-,,,
-CENTRE,Lumi Forest,+3 defence while on this tile,"0, 1"
-,Research Facility,"Fight, +3 monster defence, +1 resource per monster","1, 0"
-,Tech Vault,"discard up to 3 cards, draw 3 cards","1, -1"
-,Mind Maze,+3 defence while on this tile,"0, -1"
-,The Pit,Destroy a card,"-1, -1"
-,Nebular Forge,"Mine, +3 resource defence, +2 resources","-1, 0"
-,Deep Dark,"Fight or Mine, must vs all 3 cards, take all loot","0, 0"
-,,,
-,,,
-SIDE,Old Mine,Discard 3 cards to gain 1 resource,"0, 0"
-,Dark Cave,Fight or Mine,"1, 0"
-,EMPTY,,"0, 1"
-,,,
-,,,
-SIDE,Fiery Pit,Destroy a card,"0, 0"
-,Lava Tunnels,Fight,"1, 0"
-,EMPTY,,"0, 1"
-,,,
-,,,
-SIDE,Utility Outpost,"Discard up to 5 cards, draw that many cards","0, 0"
-,Stronghold,Fight,"1, 0"
-,EMPTY,,"0, 1"
-,,,
-,,,
-SIDE,Ruins,"Discard up to 5 cards, draw that many cards","0, 0"
-,Core Mine,Mine,"1, 0"
-,EMPTY,,"0, 1"
-,,,
-,,,
-SIDE,Winding Tunnels,"+2 defence on this tile, draw 2 cards","0, 0"
-,Mysterious Caverns,"Fight or Mine, must vs 2 cards minimum, +1 loot","1, 0"
-,EMPTY,,"0, 1"
-,,,
-,,,
-SIDE,Ice Crystals,Mine,"0, 0"
-,Frozen Lake,draw 2 cards from your discard pile,"1, 0"
-,EMPTY,,"0, 1"
+Tile Group,Name,Description,Coords,Walls
+START 1,START,+9 (Defence) while on this tile<BR>Mine or Fight,"0, 1",
+,Volcanic Site,Mine,"0, 0",
+,Abandoned Colony,Fight,"1, 1",
+,EMPTY,,"1, 0",
+,,,,
+,,,,
+START 2,START,+9 (Defence) while on this tile<BR>Mine or Fight,"0, 1",
+,Geo-Thermal Vents,Mine,"0, 0",
+,Quantum Rift,Fight,"1, 1",
+,EMPTY,,"1, 0",
+,,,,
+,,,,
+CENTRE,Lumi Forest,+3 defence while on this tile,"0, 1",
+,Research Facility,"Fight, +3 monster defence, +1 resource per monster","1, 0",
+,Tech Vault,"discard up to 3 cards, draw 3 cards","1, -1",
+,Mind Maze,+3 defence while on this tile,"0, -1",
+,The Pit,Destroy a card,"-1, -1",
+,Nebular Forge,"Mine, +3 resource defence, +2 resources","-1, 0",
+,Deep Dark,"Fight or Mine, must vs all 3 cards, take all loot","0, 0",
+,,,,
+,,,,
+SIDE,Old Mine,Discard 3 cards to gain 1 resource,"0, 0",
+,Dark Cave,Fight or Mine,"1, 0",
+,EMPTY,,"0, 1",
+,,,,
+,,,,
+SIDE,Fiery Pit,Destroy a card,"0, 0",
+,Lava Tunnels,Fight,"1, 0",
+,EMPTY,,"0, 1",
+,,,,
+,,,,
+SIDE,Utility Outpost,"Discard up to 5 cards, draw that many cards","0, 0",
+,Stronghold,Fight,"1, 0",
+,EMPTY,,"0, 1",
+,,,,
+,,,,
+SIDE,Ruins,"Discard up to 5 cards, draw that many cards","0, 0",
+,Core Mine,Mine,"1, 0",
+,EMPTY,,"0, 1",
+,,,,
+,,,,
+SIDE,Winding Tunnels,"+2 defence on this tile, draw 2 cards","0, 0",
+,Mysterious Caverns,"Fight or Mine, must vs 2 cards minimum, +1 loot","1, 0",
+,EMPTY,,"0, 1",
+,,,,
+,,,,
+SIDE,Ice Crystals,Mine,"0, 0",
+,Frozen Lake,draw 2 cards from your discard pile,"1, 0",
+,EMPTY,,"0, 1",
+,,,,
+,,,,
+SIDE,Ice Crystals,Mine,"0, 0",
+,Frozen Lake,draw 2 cards from your discard pile,"1, 0",
+,EMPTY,,"0, 1",
+,,,,
+,,,,
+SIDE,Ice Crystals,Mine,"0, 0",
+,Frozen Lake,draw 2 cards from your discard pile,"1, 0",
+,EMPTY,,"0, 1",
+,,,,
+,,,,
+START 3,START,+9 (Defence) while on this tile<BR>Mine or Fight,"0, 1",
+,Volcanic Site,Mine,"0, 0",
+,Abandoned Colony,Fight,"1, 1",
+,EMPTY,,"1, 0",
+,,,,
+,,,,
+START 4,START,+9 (Defence) while on this tile<BR>Mine or Fight,"0, 1",
+,Geo-Thermal Vents,Mine,"0, 0",
+,Quantum Rift,Fight,"1, 1",
+,EMPTY,,"1, 0",
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+todo,,,,
+random blocked walls,,,,
+2x movement cost paths ,,,,
+chests & loot,,,,
+,,,,
+,,,,
+,,,,
+mine or fight,,,,
+"mine, +1 loot",,,,
+fight +1 loot,,,,
++5 defence,,,,
+draw 2 cards,,,,
+"fight, must fight >1, +3 loot",,,,
+"fight, must fight 3, +6 loot",,,,
+"mine, draw 1 card on win",,,,
+"fight, +1 utility loot",,,,
+"mine, +1 resource loot",,,,
+"discard 2, draw 3",,,,
+"fight, destroy 1 on win",,,,
+"mine, secure 1 resource on win",,,,
++1 move action,,,,
+"mine, x2 resistance, x2 loot",,,,
+"mine, +1 loot choice",,,,
+"fight, +1 loot choice",,,,
+red 1 loot choice,,,,
+replace 1 loot choice ,,,,
