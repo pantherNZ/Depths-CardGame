@@ -1,14 +1,16 @@
-Name,Description,Reward,Defence,Count,Lose
-Xenobiological Flora,,Draw 3 utility,1,2,
-Antimatter Pods,,Draw 1 resource,2,2,
-Electrum Veins,,Draw 3 utility,3,2,
-Plasma Springs,,"Draw 4 utility, pick 2",4,2,
-Ionic Crystal Fields,,Draw 2 resources,5,1,Discard 1 card
-Nebula Gas Vents,,Draw 3 of any cards,8,1,
-Dark Matter Clusters,,Draw 4 utility,7,1,Discard 1 victory card
-Quantum Foam Pools,Requires a + mining utility card,Draw 3 resources,6,1,Discard 1 card
-Crystalline Deposits,Can only be mined if you roll a 6,Draw 4 utility,0,1,Discard 1 card
-White Crystals,,"Draw 4 utility, pick 2",3,1,
-Magical Crystal's,,"Draw 5 utility, pick 3",5,1,
-Spiky Formations,,"Discard an equipment, gain 1 resource card",3,1,
-Derelict Mine,,Draw utility and discard until 1 equipment gained,,,
+Name,Description,Reward,Defence,Count,Lose,
+Xenobiological Flora,,Loot 4,5,4,,
+Antimatter Pods,,Loot 5 Resource,6,2,,
+Electrum Veins,,Loot 6 Resource,7,2,,
+Plasma Springs,,Loot 7 Resource,8,1,,
+Ionic Crystal Fields,,Loot 3 x 2,5,1,,
+Nebula Gas Vents,,"Loot 15 Resource, max 1 card",14,1,,
+Dark Matter Clusters,,Destroy 1 card<BR>Draw 2 Cards,6,1,,
+Quantum Foam Pools,Requires a + Attack Card,Loot 5 Main Deck,6,1,,
+Crystalline Deposits,Can only be mined if you roll a 6,Replace 1 Loot<BR>Loot 6 Main Deck,0,0,,
+White Crystals,Requires a + Mining Card,Loot 5,5,1,,
+Magica,,Replace 1 Loot<BR>Loot 4 Main Deck,5,1,,
+Spiky Formations,,"Destroy 1 Equipment<BR>Loot 15 Resource, max 1 card",8,1,,
+Derelict Mine,,,,0,,
+Mine,,,,0,,
+Quarry,,Loot 3 Resource,5,1,,(Persistent)

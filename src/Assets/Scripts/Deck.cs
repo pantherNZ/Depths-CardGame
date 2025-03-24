@@ -26,6 +26,7 @@ public class Deck : MonoBehaviour
     const string minesDataPath = "Data/Depths - Card Game - Mines";
     const string tilesDataPath = "Data/Depths - Card Game - Tiles";
 
+    [SerializeField] int numPlayers = 2;
     [SerializeField] float hexSize;
     [SerializeField] GameObject equipmentCardPrefab;
     [SerializeField] GameObject utilityCardPrefab;
@@ -48,12 +49,14 @@ public class Deck : MonoBehaviour
         public Vector2Int coords;
     }
 
-    List<GameObject> equipmentCards = new List<GameObject>();
-    List<GameObject> utilityCards = new List<GameObject>();
-    List<GameObject> resourcesCards = new List<GameObject>();
-    List<GameObject> monsterCards = new List<GameObject>();
-    List<GameObject> mineCards = new List<GameObject>();
-    List<TileGroup> tileGroups = new();
+    readonly List<GameObject>[] playerDeck = new List<GameObject>[2]{ new(), new() };
+    readonly List<List<GameObject>> startingCards = new List<List<GameObject>>();
+    readonly List<GameObject> equipmentCards = new List<GameObject>();
+    readonly List<GameObject> utilityCards = new List<GameObject>();
+    readonly List<GameObject> resourcesCards = new List<GameObject>();
+    readonly List<GameObject> monsterCards = new List<GameObject>();
+    readonly List<GameObject> mineCards = new List<GameObject>();
+    readonly List<TileGroup> tileGroups = new();
 
     string[] SplitData( string line )
     {
@@ -97,6 +100,8 @@ public class Deck : MonoBehaviour
 
     string HTMLFormat( string str )
     {
+        if( str == "EMPTY" )
+            return string.Empty;
         return str.Replace( "<BR>", "\n" );
     }
 
@@ -144,16 +149,40 @@ public class Deck : MonoBehaviour
                 continue;
             if( !int.TryParse( data[3], out var count ) )
                 continue;
+            if( !int.TryParse( data[4], out var playerDeckCount ) )
+                playerDeckCount = 0;
+            if( !int.TryParse( data[5], out var startingDeckCount ) )
+                startingDeckCount = 0;
 
-            for( var i = 0; i < count; ++i )
+            if( startingDeckCount > 0 )
+                startingCards.Add( new List<GameObject>() );
+
+            for( var i = 0; i < count + playerDeckCount + startingDeckCount; ++i )
             {
-                var newCard = Instantiate( utilityCardPrefab, Vector3.zero, Quaternion.identity );
-                newCard.name = name;
-                var texts = newCard.GetComponentsInChildren<TMPro.TextMeshPro>();
-                texts[0].text = name;
-                texts[1].text = description;
-                texts[2].text = cost.ToString();
-                utilityCards.Add( newCard );
+                GameObject Create( string cardName )
+                {
+                    var newCard = Instantiate( utilityCardPrefab, Vector3.zero, Quaternion.identity );
+                    newCard.name = cardName;
+                    var texts = newCard.GetComponentsInChildren<TMPro.TextMeshPro>();
+                    texts[0].text = cardName;
+                    texts[1].text = description;
+                    texts[2].text = cost.ToString();
+                    return newCard;
+                }
+
+                if( i < count )
+                {
+                    utilityCards.Add( Create( name ) );
+                }
+                else if( i >= count && i < count + playerDeckCount )
+                {
+                    for( int j = 0; j < numPlayers; ++j )
+                        playerDeck[j].Add( Create( name + j ) );
+                }
+                else
+                {
+                    startingCards.Back().Add( Create( name) );
+                }
             }
         }
 
@@ -167,17 +196,32 @@ public class Deck : MonoBehaviour
                 continue;
             var description = HTMLFormat( data[3] );
             var count = int.Parse( data[4] );
+            if( !int.TryParse( data[5], out var playerDeckCount ) )
+                playerDeckCount = 0;
 
-            for( var i = 0; i < count; ++i )
+            for( var i = 0; i < count + playerDeckCount; ++i )
             {
-                var newCard = Instantiate( resourcesCardPrefab, Vector3.zero, Quaternion.identity );
-                newCard.name = name;
-                var texts = newCard.GetComponentsInChildren<TMPro.TextMeshPro>();
-                texts[0].text = gold.ToString();
-                texts[1].text = name;
-                texts[2].text = description;
-                texts[3].text = cost.ToString();
-                resourcesCards.Add( newCard );
+                GameObject Create( string cardName )
+                {
+                    var newCard = Instantiate( resourcesCardPrefab, Vector3.zero, Quaternion.identity );
+                    newCard.name = cardName;
+                    var texts = newCard.GetComponentsInChildren<TMPro.TextMeshPro>();
+                    texts[0].text = gold.ToString();
+                    texts[1].text = cardName;
+                    texts[2].text = description;
+                    texts[3].text = cost.ToString();
+                    return newCard;
+                }
+
+                if( i < count )
+                {
+                    resourcesCards.Add( Create( name ) );
+                }
+                else if( i >= count && i < count + playerDeckCount )
+                {
+                    for( int j = 0; j < numPlayers; ++j )
+                        playerDeck[j].Add( Create( name + j ) );
+                }
             }
         }
 
@@ -190,7 +234,7 @@ public class Deck : MonoBehaviour
 
             var name = data[0];
             var description = HTMLFormat( data[1] );
-            var reward = data[2];
+            var reward = HTMLFormat(data[2]);
             if( !int.TryParse( data[3], out var defence ) ) 
                 continue;
             if( !int.TryParse( data[4], out var count ) ) 
@@ -214,12 +258,12 @@ public class Deck : MonoBehaviour
             var data = SplitData( line );
             var name = data[0];
             var description = HTMLFormat( data[1] );
-            var reward = data[2];
+            var reward = HTMLFormat(data[2]);
             if( !int.TryParse( data[3], out var defence ) ) 
                 continue;
             if( !int.TryParse( data[4], out var count ) ) 
                 continue;
-            var lose = data[5];
+            var onLose = data[5];
 
             for( var i = 0; i < count; ++i )
             {
@@ -227,7 +271,7 @@ public class Deck : MonoBehaviour
                 newCard.name = name;
                 var texts = newCard.GetComponentsInChildren<TMPro.TextMeshPro>();
                 texts[0].text = name;
-                texts[1].text = description;
+                texts[1].text = description + "\n\nWin: " + reward + "\nLose: " + onLose;
                 texts[2].text = defence.ToString();
                 mineCards.Add( newCard );
             }
@@ -249,6 +293,8 @@ public class Deck : MonoBehaviour
                 {
                     tileGroups.Add( tileGroup );
                     tileGroup.obj.transform.Rotate( 0.0f, 0.0f, 60.0f * Random.Range( 0, 5 ) );
+                    foreach( Transform child in tileGroup.obj.transform )
+                        child.transform.rotation = Quaternion.identity;
                 }
                 tileGroup = null;
                 continue;
@@ -283,6 +329,7 @@ public class Deck : MonoBehaviour
             texts[1].text = description;
         }
 
+        var gapBetweenDecksX = 1.2f;
         var gapBetweenDecksY = 1.75f;
 
         var mainDeck = equipmentCards;
@@ -295,6 +342,12 @@ public class Deck : MonoBehaviour
         monsterCards.InsertRange( 0, mineCards );
 
         InitiateDeck( transform.position.SetY( transform.position.y + gapBetweenDecksY * 2.0f ), sideDeck );
+        
+        foreach( var ( idx, deck ) in startingCards.Enumerate() )
+            InitiateDeck( transform.position.SetX( transform.position.x + gapBetweenDecksX * idx ), deck );
+
+        foreach( var ( idx, deck ) in playerDeck.Enumerate() )
+            InitiateDeck( transform.position.SetX( transform.position.x + 10.0f + gapBetweenDecksX * idx ), deck );
 
         try
         {
@@ -307,6 +360,10 @@ public class Deck : MonoBehaviour
             LoadCards( resourcesCards, reader );
             LoadCards( monsterCards, reader );
             LoadCards( mineCards, reader );
+            foreach( var deck in startingCards )
+                LoadCards( deck, reader );
+            foreach( var deck in playerDeck )
+                LoadCards( deck, reader );
 
             var groupCount = reader.ReadInt32();
             for( int i = 0; i < groupCount; ++i )
@@ -321,6 +378,8 @@ public class Deck : MonoBehaviour
                 {
                     group.obj.transform.position = new Vector3( x, y, z );
                     group.obj.transform.rotation = Quaternion.Euler( 0.0f, 0.0f, rot );
+                    foreach( Transform child in group.obj.transform )
+                        child.transform.rotation = Quaternion.identity;
                 }
             }
         }
@@ -400,6 +459,10 @@ public class Deck : MonoBehaviour
         WriteCards( resourcesCards, writer );
         WriteCards( monsterCards, writer );
         WriteCards( mineCards, writer );
+        foreach( var deck in startingCards )
+            WriteCards( deck, writer );
+        foreach( var deck in playerDeck )
+            WriteCards( deck, writer );
 
         writer.Write( tileGroups.Count );
         foreach( var group in tileGroups )

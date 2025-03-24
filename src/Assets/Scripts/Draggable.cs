@@ -36,6 +36,10 @@ public class Draggable : MonoBehaviour
             {
                 gameObject.transform.Rotate( new Vector3( 0.0f, 0.0f, rotationSnap * Mathf.Sign( Input.mouseScrollDelta.x ) ) );
                 offset = offset.RotateZ( rotationSnap );
+
+                foreach( Transform child in gameObject.transform )
+                    child.transform.rotation = Quaternion.identity;
+
                 OnMouseDrag();
             }
 
