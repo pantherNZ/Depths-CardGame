@@ -16,14 +16,13 @@ public class DataImporter : MonoBehaviour
     private static readonly Dictionary<string, string> sheetGids = new Dictionary<string, string>
     {
         { "Depths - Card Game - Equipment.csv", "1692924861" },
-        { "Depths - Card Game - Mines.csv", "1518700764" },
         { "Depths - Card Game - Monsters.csv", "175727478" },
         { "Depths - Card Game - Resources.csv", "120251468" },
         { "Depths - Card Game - Tiles.csv", "1079755230" },
         { "Depths - Card Game - Utility.csv", "696885727" }
     };
 
-    [MenuItem("Tools/Import CSV Data")]
+    [MenuItem("Scripts/Import CSV Data")]
     public static void ImportCSVData()
     {
         EditorUtility.DisplayProgressBar("Importing CSV Data", "Starting download...", 0f);
