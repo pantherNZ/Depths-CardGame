@@ -102,13 +102,45 @@ public class Deck : MonoBehaviour
     void InitiateDeck(Vector3 position, List<GameObject> deck)
     {
         deck.RandomShuffle();
+
+        int baseSortingOrder = 0;
         for (var i = 0; i < deck.Count; ++i)
         {
-            deck[i].transform.position = position.SetZ(i * 0.1f);
+            deck[i].transform.position = position.SetZ(i);
+
             // Set sorting order so cards on top are rendered and selected correctly
-            var renderers = deck[i].GetComponentsInChildren<SpriteRenderer>();
-            foreach (var renderer in renderers)
-                renderer.sortingOrder = i;
+            // Each card gets a base order, and its Draggable component handles internal sprite layering
+            var spriteRenderers = deck[i].GetComponentsInChildren<SpriteRenderer>();
+            var textMeshRenderers = deck[i].GetComponentsInChildren<TMPro.TextMeshPro>();
+
+            // Get the Draggable component to access initialRelativeOrder
+            var draggable = deck[i].GetComponent<Draggable>();
+            if (draggable != null && (spriteRenderers.Length > 0 || textMeshRenderers.Length > 0))
+            {
+                // Assign sequential orders to each sprite within the card
+                var orderedSpriteRenderers = spriteRenderers.OrderBy(r => r.sortingOrder).ToArray();
+                for (int j = 0; j < orderedSpriteRenderers.Length; ++j)
+                {
+                    orderedSpriteRenderers[j].sortingOrder = baseSortingOrder + j;
+                }
+
+                // Handle TextMeshPro components (they use MeshRenderer with sortingOrder)
+                var orderedTextRenderers = textMeshRenderers.OrderBy(t => t.sortingOrder).ToArray();
+                for (int j = 0; j < orderedTextRenderers.Length; ++j)
+                {
+                    orderedTextRenderers[j].sortingOrder = baseSortingOrder + spriteRenderers.Length + j;
+                }
+
+                baseSortingOrder += orderedSpriteRenderers.Length + orderedTextRenderers.Length;
+            }
+            else if (spriteRenderers.Length > 0 || textMeshRenderers.Length > 0)
+            {
+                // Fallback if no Draggable component
+                foreach (var renderer in spriteRenderers)
+                    renderer.sortingOrder = baseSortingOrder++;
+                foreach (var textMesh in textMeshRenderers)
+                    textMesh.sortingOrder = baseSortingOrder++;
+            }
         }
     }
 
