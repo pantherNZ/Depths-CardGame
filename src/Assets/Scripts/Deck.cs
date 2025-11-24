@@ -103,7 +103,13 @@ public class Deck : MonoBehaviour
     {
         deck.RandomShuffle();
         for (var i = 0; i < deck.Count; ++i)
-            deck[i].transform.position = position.SetZ(i);
+        {
+            deck[i].transform.position = position.SetZ(i * 0.1f);
+            // Set sorting order so cards on top are rendered and selected correctly
+            var renderers = deck[i].GetComponentsInChildren<SpriteRenderer>();
+            foreach (var renderer in renderers)
+                renderer.sortingOrder = i;
+        }
     }
 
     Vector2 HexToPixel(Vector2Int coord)
@@ -175,9 +181,6 @@ public class Deck : MonoBehaviour
             if (!int.TryParse(GetColumnValue(data, utilityHeaders, "Starting Count"), out var startingDeckCount))
                 startingDeckCount = 0;
 
-            if (startingDeckCount > 0)
-                startingCards.Add(new List<GameObject>());
-
             for (var i = 0; i < count + playerDeckCount + startingDeckCount; ++i)
             {
                 GameObject Create(string cardName)
@@ -202,7 +205,9 @@ public class Deck : MonoBehaviour
                 }
                 else
                 {
-                    startingCards.Back().Add(Create(name));
+                    if (startingCards.Count == 0)
+                        startingCards.Add(new List<GameObject>());
+                    startingCards[0].Add(Create(name));
                 }
             }
         }
@@ -215,21 +220,24 @@ public class Deck : MonoBehaviour
             var name = GetColumnValue(data, resourcesHeaders, "Name");
             if (!int.TryParse(GetColumnValue(data, resourcesHeaders, "Cost"), out var cost))
                 continue;
-            if (!int.TryParse(GetColumnValue(data, resourcesHeaders, "Gold"), out var gold))
+            if (!int.TryParse(GetColumnValue(data, resourcesHeaders, "Score"), out var score))
                 continue;
             var description = HTMLFormat(GetColumnValue(data, resourcesHeaders, "Description"));
-            var count = int.Parse(GetColumnValue(data, resourcesHeaders, "Deck Count"));
+            if (!int.TryParse(GetColumnValue(data, resourcesHeaders, "Count"), out var count))
+                continue;
             if (!int.TryParse(GetColumnValue(data, resourcesHeaders, "Extra deck (always available)"), out var playerDeckCount))
                 playerDeckCount = 0;
+            if (!int.TryParse(GetColumnValue(data, resourcesHeaders, "Starting Count"), out var startingDeckCount))
+                startingDeckCount = 0;
 
-            for (var i = 0; i < count + playerDeckCount; ++i)
+            for (var i = 0; i < count + playerDeckCount + startingDeckCount; ++i)
             {
                 GameObject Create(string cardName)
                 {
                     var newCard = Instantiate(resourcesCardPrefab, Vector3.zero, Quaternion.identity);
                     newCard.name = cardName;
                     var texts = newCard.GetComponentsInChildren<TMPro.TextMeshPro>();
-                    texts[0].text = gold.ToString();
+                    texts[0].text = score.ToString();
                     texts[1].text = cardName;
                     texts[2].text = description;
                     texts[3].text = cost.ToString();
@@ -244,6 +252,12 @@ public class Deck : MonoBehaviour
                 {
                     for (int j = 0; j < numPlayers; ++j)
                         playerDeck[j].Add(Create(name + j));
+                }
+                else
+                {
+                    if (startingCards.Count == 0)
+                        startingCards.Add(new List<GameObject>());
+                    startingCards[0].Add(Create(name));
                 }
             }
         }
@@ -330,6 +344,23 @@ public class Deck : MonoBehaviour
             var texts = newTile.GetComponentsInChildren<TMPro.TextMeshProUGUI>(true);
             texts[0].text = name;
             texts[1].text = description;
+        }
+
+        // Duplicate the starting deck for the second player and shuffle both
+        if (startingCards.Count > 0)
+        {
+            var player2StartingDeck = new List<GameObject>();
+            foreach (var card in startingCards[0])
+            {
+                var duplicateCard = Instantiate(card, Vector3.zero, Quaternion.identity);
+                duplicateCard.name = card.name + "_P2";
+                player2StartingDeck.Add(duplicateCard);
+            }
+            startingCards.Add(player2StartingDeck);
+
+            // Shuffle both starting decks
+            startingCards[0].RandomShuffle();
+            startingCards[1].RandomShuffle();
         }
 
         var gapBetweenDecksX = 1.2f;
@@ -479,7 +510,7 @@ public class Deck : MonoBehaviour
     }
 
 #if UNITY_EDITOR
-    [MenuItem( "Scripts/Delete Save Data" )]
+    [MenuItem("Scripts/Delete Save Data")]
 #endif
     public static void DeleteSaveData()
     {
