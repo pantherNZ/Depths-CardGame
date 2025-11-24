@@ -57,7 +57,7 @@ public class Draggable : MonoBehaviour
     {
         // Cache all renderers once at startup
         if (allRenderers == null)
-            allRenderers = FindObjectsOfType<SpriteRenderer>();
+            allRenderers = FindObjectsByType<SpriteRenderer>(FindObjectsSortMode.None);
 
         // Find the highest sorting order among all cards
         int maxOrder = 0;
